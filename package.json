@@ -1,27 +1,20 @@
 {
   "name": "webvtt2ass",
   "version": "1.0.0",
-  "authors": [
-    "tautcony@gmail.com"
-  ],
-  "description": "Convert WebVTT to ass",
-  "main": "src.js",
-  "keywords": [
-    "WebVTT ASS"
-  ],
+  "authors": "TautCony (@tautcony)<tautcony@gmail.com>",
+  "description": "Convert WebVTT into ass",
+  "license": "GPL 3.0",
+  "main": "index.js",
+  "bin": "cli.js",
   "repository": {
     "type": "git",
     "url": "git://bitbucket.org/TautCony/webvtt2ass.git"
   },
-  "license": "GPL 3.0",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
   "dependencies": {
     "underscore": ">=1.4.0"
-  }
+  },
+  "keywords": [
+    "WebVTT",
+    "ASS"
+  ]
 }

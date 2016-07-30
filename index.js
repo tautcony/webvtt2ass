@@ -11,18 +11,20 @@ function assHead() {
     return ret;
 }
 
-var filename = 'samples/sample02';
-var context = fs.readFileSync(filename, 'utf8').replace('\r', '');
+function convert(input, output) {
+    var context = fs.readFileSync(input, 'utf8').replace('\r', '');
+    var ret = parser.parse(context, 'subtitles');
 
-var ret = parser.parse(context, 'subtitles');
+    output.write(assHead());
 
-console.log(ret);
+    ret.cues.forEach(function (item, index, array) {
+        var beginTime = new timespan(item.startTime*1000).assFormat();
+        var endTime = new timespan(item.endTime*1000).assFormat();
+        var text = parseText(item);
+        output.write("Dialogue: 0,{0},{1},{2},,0,0,0,,{3}".format(beginTime, endTime, text.voice, text.text) + "\n");
+    });
+};
 
-console.log(assHead());
+//convert('samples/sample02', process.stdout);
 
-ret.cues.forEach(function (item, index, array) {
-    var beginTime = new timespan(item.startTime*1000).assFormat();
-    var endTime = new timespan(item.endTime*1000).assFormat();
-    var text = parseText(item);
-    console.log("Dialogue: 0,{0},{1},{2},,0,0,0,,{3}".format(beginTime, endTime, text.voice, text.text));
-});
+module.exports = convert;

@@ -1,4 +1,4 @@
-```
+﻿```
                    __               __    __       ___                              
                   /\ \             /\ \__/\ \__  /'___`\                            
  __  __  __     __\ \ \____  __  __\ \ ,_\ \ ,_\/\_\ /\ \     __      ____    ____  
@@ -7,6 +7,7 @@
  \ \___x___/'\ \____\\ \_,__/\ \___/  \ \__\\ \__\/\______/\ \__/.\_\/\____/\/\____/
   \/__//__/   \/____/ \/___/  \/__/    \/__/ \/__/\/_____/  \/__/\/_/\/___/  \/___/ 
 ```
-Convert WEBVTT to ASS subtitle.
+
+Convert [WebVTT](http://dev.w3.org/html5/webvtt/) (The Web Video Text Tracks Format, aka html5 video subtitles) into ASS subtitle.
 
 Under constraction🚧
