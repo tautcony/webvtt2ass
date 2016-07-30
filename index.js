@@ -15,6 +15,6 @@ function webvtt2ass(input, outputStream) {
     });
 };
 
-//webvtt2ass('samples/sample02', process.stdout);
+webvtt2ass('samples/sample02', process.stdout);
 
 module.exports = webvtt2ass;
