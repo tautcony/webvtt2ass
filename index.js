@@ -3,7 +3,7 @@ var parser    = new (require('./lib/webvtt/parser'))();
 var subtitle  = require('./lib/subtitle.text');
 require('./lib/string.format');
 
-function convert(input, outputStream) {
+function webvtt2ass(input, outputStream) {
     'use strict';
     fs.readFile(input, 'utf8', (err, context) => {
         if (err !== null) { throw err; }
@@ -15,6 +15,6 @@ function convert(input, outputStream) {
     });
 };
 
-//convert('samples/sample02', process.stdout);
+//webvtt2ass('samples/sample02', process.stdout);
 
-module.exports = convert;
+module.exports = webvtt2ass;
