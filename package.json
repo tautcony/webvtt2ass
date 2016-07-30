@@ -23,5 +23,5 @@
   ],
   "dependencies": {
     "underscore": ">=1.4.0"
-  },
+  }
 }
