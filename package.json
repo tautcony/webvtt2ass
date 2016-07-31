@@ -1,20 +1,26 @@
 {
   "name": "webvtt2ass",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "authors": "TautCony (@tautcony)<tautcony@gmail.com>",
-  "description": "Convert WebVTT into ass",
+  "description": "Convert WebVTT into ASS Subtitle",
   "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/tautcony/webvtt2ass/issues"
+  },
+  "homepage": "https://github.com/tautcony/webvtt2ass",
   "main": "index.js",
   "bin": "cli.js",
   "repository": {
     "type": "git",
-    "url": "git://bitbucket.org/TautCony/webvtt2ass.git"
+    "url": "https://github.com/tautcony/webvtt2ass.git"
   },
   "dependencies": {
     "he": ">=1.0.0"
   },
   "keywords": [
     "WebVTT",
-    "ASS"
+    "ASS",
+    "subtitles",
+    "html5"
   ]
 }
