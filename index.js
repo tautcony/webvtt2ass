@@ -9,7 +9,7 @@ function webvtt2ass(input, outputStream) {
         if (err !== null) { throw err; }
         outputStream.write(subtitle.assHead());
         parser.parse(context, 'subtitles').cues.forEach(item => {
-            var ret = subtitle.parseSegment(item);//console.log(item);
+            var ret = subtitle.parseSegment(item);
             outputStream.write("Dialogue: 0,{0},{1},{2},{3},0,0,0,,{4}".format(ret.begin, ret.end, ret.style, ret.voice, ret.text) + "\n");
         });
     });
