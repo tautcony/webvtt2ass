@@ -64,3 +64,6 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# sample files
+samples
