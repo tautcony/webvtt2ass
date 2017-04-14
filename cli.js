@@ -39,7 +39,7 @@ process.stdout.on("error", function (err) {
 });
 
 let options = commandLineArgs(optionDefinitions);
-console.log(options);
+
 const valid = options.help || options.version || (options.input && fs.existsSync(options.input));
 if (!valid) {
     options.help = true;
@@ -47,7 +47,7 @@ if (!valid) {
 }
 
 if (options.version === true) {
-    var info = require('./package.json');
+    const info = require('./package.json');
     console.log(info.name + " " + info.version);
     process.exit();
 }
