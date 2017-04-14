@@ -15,7 +15,9 @@
     "url": "https://github.com/tautcony/webvtt2ass.git"
   },
   "dependencies": {
-    "he": ">=1.0.0"
+    "he": ">=1.0.0",
+    "command-line-usage": ">=4.0.0",
+    "command-line-args": ">=4.0.0"
   },
   "keywords": [
     "WebVTT",

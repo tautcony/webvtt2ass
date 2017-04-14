@@ -1,28 +1,62 @@
-var fs = require("fs");
-var webvtt2ass = require("./");
-var cli = process.argv.slice(2);
+const fs = require("fs");
+const webvtt2ass = require("./");
+const commandLineArgs = require("command-line-args");
+const commandLineUsage = require("command-line-usage");
 
-var printHelp = function printHelp() {
-    console.error("Usage: webvtt2ass [vtt_file] [ass_file]");
-    process.exit(0);
-}
+const sections = [
+    {
+        header: "webvtt2ass",
+        content: "Convert WebVTT (The Web Video Text Tracks Format, aka html5 video subtitles) into ASS subtitle."
+    },
+    {
+        header: "Usage",
+        content: "$ webvtt2ass [arguments]"
+    },
+    {
+        header: "Command List",
+        content: [
+            { name: "--help", summary: "display this help and exit" },
+            { name: "--output [file]", summary: "Place the output into [file]" },
+            { name: "--version", summary: "Print the version." }
+        ]
+    }
+];
 
-if (typeof cli[0] === "string" && cli[0].toLowerCase().indexOf("help") > -1) {
-    return printHelp();
-}
+const optionDefinitions = [
+    { name: "input", alias: 'i', defaultOption: true, type: String},
+    { name: "help", alias: 'h', type: Boolean },
+    { name: 'output', alias: 'o', type: String },
+    { name: "version", type: Boolean }
+];
 
-process.stdout.on("error", function(err) {
-    if (err.code !== "EPIPE") throw err
+process.stdout.on("error", function (err) {
+    "use strict";
+    if (err.code !== "EPIPE") {
+        throw err;
+    }
 });
 
-if (cli.length >= 2) {
-    var input = cli[0];
-    var output = fs.createWriteStream(cli[1]);
-} else if (cli.length === 1) {
-    var input = cli[0];
-    var output = process.stdout;
-} else {
-    printHelp();
+let options = commandLineArgs(optionDefinitions);
+
+const valid = options.help || options.version || (options.input && fs.existsSync(options.input));
+if (!valid) {
+    options.help = true;
+    console.log("Invalid options");
 }
 
-webvtt2ass(input, output);
+if (options.version === true) {
+    var info = require('./package.json');
+    console.log(info.name + " " + info.version);
+    process.exit();
+}
+
+if (options.help === true) {
+    console.log(commandLineUsage(sections));
+    process.exit();
+}
+let output = process.stdout;
+if (options.output && options.output.length > 0) {
+    output = fs.createWriteStream(options.output);
+}
+
+webvtt2ass(options.input, output);
