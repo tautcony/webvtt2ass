@@ -1,6 +1,7 @@
-const fs = require("fs");
-const webvtt2ass = require("./");
-const commandLineArgs = require("command-line-args");
+"use strict";
+const fs               = require("fs");
+const webvtt2ass       = require("./");
+const commandLineArgs  = require("command-line-args");
 const commandLineUsage = require("command-line-usage");
 
 const sections = [
@@ -10,7 +11,7 @@ const sections = [
     },
     {
         header: "Usage",
-        content: "$ webvtt2ass [arguments]"
+        content: "$ webvtt2ass [arguments] file"
     },
     {
         header: "Command List",
@@ -32,7 +33,6 @@ const optionDefinitions = [
 ];
 
 process.stdout.on("error", function (err) {
-    "use strict";
     if (err.code !== "EPIPE") {
         throw err;
     }
