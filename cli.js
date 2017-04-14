@@ -1,18 +1,18 @@
-var fs = require('fs');
-var webvtt2ass = require('./');
+var fs = require("fs");
+var webvtt2ass = require("./");
 var cli = process.argv.slice(2);
 
 var printHelp = function printHelp() {
-    console.error('Usage: webvtt2ass [vtt_file] [ass_file]');
+    console.error("Usage: webvtt2ass [vtt_file] [ass_file]");
     process.exit(0);
 }
 
-if (typeof cli[0] === 'string' && cli[0].toLowerCase().indexOf('help') > -1) {
+if (typeof cli[0] === "string" && cli[0].toLowerCase().indexOf("help") > -1) {
     return printHelp();
 }
 
-process.stdout.on('error', function(err) {
-    if (err.code !== 'EPIPE') throw err
+process.stdout.on("error", function(err) {
+    if (err.code !== "EPIPE") throw err
 });
 
 if (cli.length >= 2) {
