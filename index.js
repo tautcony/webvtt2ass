@@ -1,7 +1,15 @@
 var fs        = require('fs');
 var parser    = new (require('./lib/webvtt/parser'))();
 var subtitle  = require('./lib/subtitle.text');
-require('./lib/string.format');
+
+if (!String.prototype.format) {
+    String.prototype.format = function() {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function(match, number) {
+        return typeof args[number] != 'undefined' ? args[number] : match;
+    });
+  };
+}
 
 function webvtt2ass(input, outputStream) {
     'use strict';
