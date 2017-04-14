@@ -15,8 +15,9 @@ const sections = [
     {
         header: "Command List",
         content: [
-            { name: "--help", summary: "display this help and exit" },
+            { name: "--font [font name]", summary: "Use the Specified font" },
             { name: "--output [file]", summary: "Place the output into [file]" },
+            { name: "--help", summary: "display this help and exit" },
             { name: "--version", summary: "Print the version." }
         ]
     }
@@ -24,8 +25,9 @@ const sections = [
 
 const optionDefinitions = [
     { name: "input", alias: 'i', defaultOption: true, type: String},
+    { name: "font", alisa: 'f', type: String},
+    { name: "output", alias: 'o', type: String },
     { name: "help", alias: 'h', type: Boolean },
-    { name: 'output', alias: 'o', type: String },
     { name: "version", type: Boolean }
 ];
 
@@ -37,7 +39,7 @@ process.stdout.on("error", function (err) {
 });
 
 let options = commandLineArgs(optionDefinitions);
-
+console.log(options);
 const valid = options.help || options.version || (options.input && fs.existsSync(options.input));
 if (!valid) {
     options.help = true;
@@ -59,4 +61,4 @@ if (options.output && options.output.length > 0) {
     output = fs.createWriteStream(options.output);
 }
 
-webvtt2ass(options.input, output);
+webvtt2ass(options.input, output, options.font);
