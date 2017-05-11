@@ -22,7 +22,7 @@ npm install webvtt2ass --global
 
 ## Command line
 
-You may use it from the terminal if vtt-to-str was installed globally
+You may use it from the terminal if webvtt2ass was installed globally
 
 ```bash
 webvtt2ass example.vtt example.ass
