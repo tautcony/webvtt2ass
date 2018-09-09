@@ -1,6 +1,6 @@
 "use strict";
 const fs               = require("fs");
-const webvtt2ass       = require("./");
+const webvtt2ass       = require("..");
 const commandLineArgs  = require("command-line-args");
 const commandLineUsage = require("command-line-usage");
 
@@ -16,20 +16,20 @@ const sections = [
     {
         header: "Command List",
         content: [
-            { name: "--font [font name]", summary: "Use the Specified font" },
-            { name: "--output [file]", summary: "Place the output into [file]" },
-            { name: "--help", summary: "display this help and exit" },
-            { name: "--version", summary: "Print the version." }
+            {name: "--font [font name]", summary: "Use the Specified font"},
+            {name: "--output [file]", summary: "Place the output into [file]"},
+            {name: "--help", summary: "display this help and exit"},
+            {name: "--version", summary: "Print the version."}
         ]
     }
 ];
 
 const optionDefinitions = [
-    { name: "input", alias: 'i', defaultOption: true, type: String},
-    { name: "font", alisa: 'f', type: String},
-    { name: "output", alias: 'o', type: String },
-    { name: "help", alias: 'h', type: Boolean },
-    { name: "version", type: Boolean }
+    {name: "input", alias: "i", defaultOption: true, type: String},
+    {name: "font", alisa: "f", type: String},
+    {name: "output", alias: "o", type: String},
+    {name: "help", alias: "h", type: Boolean},
+    {name: "version", type: Boolean}
 ];
 
 process.stdout.on("error", function (err) {
@@ -47,7 +47,7 @@ if (!valid) {
 }
 
 if (options.version === true) {
-    const info = require('./package.json');
+    const info = require("./package.json");
     console.log(info.name + " " + info.version);
     process.exit();
 }
