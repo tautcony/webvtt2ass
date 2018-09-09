@@ -1,6 +1,8 @@
 "use strict";
-const fs               = require("fs");
-const webvtt2ass       = require("..");
+const webvtt2ass = require("..");
+const fs = require("fs");
+const path = require("path");
+const progressBar = require("progress");
 const commandLineArgs  = require("command-line-args");
 const commandLineUsage = require("command-line-usage");
 
@@ -11,7 +13,7 @@ const sections = [
     },
     {
         header: "Usage",
-        content: "$ webvtt2ass [arguments] file"
+        content: "$ webvtt2ass [arguments] file[s]\n\nIf multiple files provided, output option will be ignored,\neach [file].vtt will be converted and written into [file].ass."
     },
     {
         header: "Command List",
@@ -25,11 +27,11 @@ const sections = [
 ];
 
 const optionDefinitions = [
-    {name: "input", alias: "i", defaultOption: true, type: String},
+    {name: "input", alias: "i", multiple: true, defaultOption: true, type: String},
     {name: "font", alisa: "f", type: String},
     {name: "output", alias: "o", type: String},
     {name: "help", alias: "h", type: Boolean},
-    {name: "version", type: Boolean}
+    {name: "version", alias: "v", type: Boolean}
 ];
 
 process.stdout.on("error", function (err) {
@@ -38,27 +40,62 @@ process.stdout.on("error", function (err) {
     }
 });
 
-let options = commandLineArgs(optionDefinitions);
+const options = commandLineArgs(optionDefinitions);
 
-const valid = options.help || options.version || (options.input && fs.existsSync(options.input));
-if (!valid) {
-    options.help = true;
-    console.log("Invalid options");
-}
-
-if (options.version === true) {
-    const info = require("./package.json");
-    console.log(info.name + " " + info.version);
+if (options.help) {
+    console.error(commandLineUsage(sections));
     process.exit();
 }
 
-if (options.help === true) {
-    console.log(commandLineUsage(sections));
+if (options.version) {
+    const info = require("../package.json");
+    console.error(`${info.name} ${info.version}`);
     process.exit();
 }
-let output = process.stdout;
-if (options.output && options.output.length > 0) {
-    output = fs.createWriteStream(options.output);
+
+if (!options.input) {
+    console.error("[error] Invalid options");
+    console.error(commandLineUsage(sections));
+    process.exit();
 }
 
-webvtt2ass(options.input, output, options.font);
+if (options.input && options.input.length === 1) {
+    let output = options.output ? fs.createWriteStream(options.output) : process.stdout;
+    if (!fs.existsSync(options.input[0])) {
+        console.error(`[error] Input file ${options.input[0]} not found!`);
+    } else {
+        webvtt2ass(options.input[0], output, options.font);
+    }
+    process.exit();
+}
+
+const deduplication = Array.from(new Set(options.input.map(input => path.resolve(input)))).map(input => {
+    const info = path.parse(input);
+    return {
+        src: input,
+        dst: path.join(info.dir, `${info.name}.ass`)
+    };
+});
+
+const bar = new progressBar("processing [:bar] :percent", {
+    complete: "=",
+    incomplete: " ",
+    width: 60,
+    total: deduplication.length
+});
+
+const errorList = [];
+
+deduplication.forEach(input => {
+    if (!fs.existsSync(input.src)) {
+        errorList.push(input.src);
+    } else {
+        webvtt2ass(input.src, fs.createWriteStream(input.dst), options.font);
+    }
+    bar.tick();
+});
+if (errorList.length > 0) {
+    console.error("\n[error] following files could not be found and will not be processed.\n"
+        + errorList.join("\n"));
+    process.exit(1);
+}
