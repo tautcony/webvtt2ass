@@ -25,8 +25,9 @@ npm install webvtt2ass --global
 You may use it from the terminal if webvtt2ass was installed globally
 
 ```bash
-webvtt2ass example.vtt example.ass
+webvtt2ass example.vtt --output example.ass
 webvtt2ass example.vtt (It will output the result to the console).
+webvtt2ass 01.vtt 02.vtt (It will convert each webvtt file into ASS subtitle)
 ```
 
 ## Usage
