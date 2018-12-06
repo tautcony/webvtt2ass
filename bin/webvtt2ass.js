@@ -66,36 +66,37 @@ if (options.input && options.input.length === 1) {
     } else {
         webvtt2ass(options.input[0], output, options.font);
     }
-    process.exit();
 }
 
-const deduplication = Array.from(new Set(options.input.map(input => path.resolve(input)))).map(input => {
-    const info = path.parse(input);
-    return {
-        src: input,
-        dst: path.join(info.dir, `${info.name}.ass`)
-    };
-});
-
-const bar = new progressBar("processing [:bar] :percent", {
-    complete: "=",
-    incomplete: " ",
-    width: 60,
-    total: deduplication.length
-});
-
-const errorList = [];
-
-deduplication.forEach(input => {
-    if (!fs.existsSync(input.src)) {
-        errorList.push(input.src);
-    } else {
-        webvtt2ass(input.src, fs.createWriteStream(input.dst), options.font);
+if (options.input && options.input.length > 1) {
+    const deduplication = Array.from(new Set(options.input.map(input => path.resolve(input)))).map(input => {
+        const info = path.parse(input);
+        return {
+            src: input,
+            dst: path.join(info.dir, `${info.name}.ass`)
+        };
+    });
+    
+    const bar = new progressBar("processing [:bar] :percent", {
+        complete: "=",
+        incomplete: " ",
+        width: 60,
+        total: deduplication.length
+    });
+    
+    const errorList = [];
+    
+    deduplication.forEach(input => {
+        if (!fs.existsSync(input.src)) {
+            errorList.push(input.src);
+        } else {
+            webvtt2ass(input.src, fs.createWriteStream(input.dst), options.font);
+        }
+        bar.tick();
+    });
+    if (errorList.length > 0) {
+        console.error("\n[error] following files could not be found and will not be processed.\n"
+            + errorList.join("\n"));
+        process.exit(1);
     }
-    bar.tick();
-});
-if (errorList.length > 0) {
-    console.error("\n[error] following files could not be found and will not be processed.\n"
-        + errorList.join("\n"));
-    process.exit(1);
 }
