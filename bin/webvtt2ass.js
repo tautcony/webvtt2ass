@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 "use strict";
 const webvtt2ass = require("..");
 const fs = require("fs");
