@@ -1,6 +1,6 @@
 {
   "name": "webvtt2ass",
-  "version": "0.3.2",
+  "version": "0.4.1",
   "authors": "TautCony (@tautcony)<tautcony@gmail.com>",
   "description": "Convert WebVTT into ASS Subtitle",
   "license": "GPL-3.0",
@@ -15,10 +15,10 @@
     "url": "https://github.com/tautcony/webvtt2ass.git"
   },
   "dependencies": {
-    "command-line-args": ">=4.0.0",
+    "command-line-args": ">=5.1.1",
     "command-line-usage": "^6.1.1",
-    "he": "^1.1.1",
-    "progress": "^2.0.0",
+    "he": "^1.2.0",
+    "progress": "^2.0.3",
     "webvtt": "0.0.2"
   },
   "keywords": [
