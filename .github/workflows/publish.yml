@@ -118,4 +118,16 @@ jobs:
 
       - name: Publish to npm
         if: steps.registry.outputs.published == 'false'
-        run: npm publish artifacts/npm/*.tgz --access public
+        shell: bash
+        run: |
+          package_version="$(node -p "require('./package.json').version")"
+          if [[ "$package_version" == *-* ]]; then
+            npm_tag="${package_version#*-}"
+            npm_tag="${npm_tag%%.*}"
+            if [[ ! "$npm_tag" =~ ^[A-Za-z][A-Za-z0-9-]*$ ]]; then
+              npm_tag="next"
+            fi
+            npm publish artifacts/npm/*.tgz --access public --tag "$npm_tag"
+          else
+            npm publish artifacts/npm/*.tgz --access public
+          fi
