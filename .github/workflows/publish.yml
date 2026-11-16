@@ -97,7 +97,7 @@ jobs:
           done
 
           npm install --global --prefix "$work/global" "${archives[0]}"
-          reported="$("$work/global/bin/webvtt2ass" --version)"
+          reported="$("$work/global/bin/webvtt2ass" --version 2>&1)"
           expected="$package_name $package_version"
           if [[ "$reported" != "$expected" ]]; then
             echo "Packaged CLI reports $reported, expected $expected" >&2
