@@ -1,0 +1,18 @@
+WEBVTT
+
+REGION
+id:captions
+width:60.5%
+regionanchor:50%,100%
+viewportanchor:50%,90%
+
+REGION
+id:captions
+width:80%
+scroll:up
+
+STYLE
+::cue(.warning) { color: yellow; }
+
+00:00.000 --> 00:03.000 region:captions
+regional cue

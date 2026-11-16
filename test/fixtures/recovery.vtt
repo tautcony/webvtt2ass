@@ -1,0 +1,16 @@
+WEBVTT
+
+NOTE this comment must not become a cue
+ignored note content
+
+bad-timing
+00:60.000 --> 00:61.000
+this cue is skipped
+
+same-id
+00:05.000 --> 00:06.000 align:start
+first retained cue
+
+same-id
+00:01.000 --> 00:02.000 align:end
+second retained cue

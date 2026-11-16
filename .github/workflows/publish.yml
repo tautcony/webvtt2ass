@@ -1,0 +1,121 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish, for example v0.4.1
+        required: true
+        type: string
+
+concurrency:
+  group: npm-publish-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: npm
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+
+    steps:
+      - name: Validate release tag
+        shell: bash
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid release tag: $RELEASE_TAG" >&2
+            exit 1
+          fi
+
+      - name: Checkout release source
+        uses: actions/checkout@v6
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          registry-url: https://registry.npmjs.org
+
+      - name: Install npm trusted publishing client
+        run: npm install --global --ignore-scripts npm@11.5.1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Pack release tarball
+        run: |
+          mkdir -p artifacts/npm
+          npm pack --pack-destination artifacts/npm
+
+      - name: Verify tarball and global installation
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          archives=(artifacts/npm/*.tgz)
+          if (( ${#archives[@]} != 1 )); then
+            echo "Expected exactly one npm tarball, found ${#archives[@]}" >&2
+            exit 1
+          fi
+
+          package_name="$(node -p "require('./package.json').name")"
+          package_version="$(node -p "require('./package.json').version")"
+          tag_version="${RELEASE_TAG#v}"
+          if [[ "$tag_version" != "$package_version" ]]; then
+            echo "Tag $RELEASE_TAG does not match package version $package_version" >&2
+            exit 1
+          fi
+
+          archive_name="$(basename "${archives[0]}" .tgz)"
+          if [[ "$archive_name" != "$package_name-$package_version" ]]; then
+            echo "Unexpected tarball name: $archive_name" >&2
+            exit 1
+          fi
+
+          work="$(mktemp -d)"
+          tar -xzf "${archives[0]}" -C "$work"
+          for file in package/package.json package/index.js package/bin/webvtt2ass.mjs package/lib/webvtt/index.js package/lib/ass/renderer.js package/LICENSE; do
+            if [[ ! -f "$work/$file" ]]; then
+              echo "Missing $file in the tarball" >&2
+              exit 1
+            fi
+          done
+
+          npm install --global --prefix "$work/global" "${archives[0]}"
+          reported="$("$work/global/bin/webvtt2ass" --version)"
+          expected="$package_name $package_version"
+          if [[ "$reported" != "$expected" ]]; then
+            echo "Packaged CLI reports $reported, expected $expected" >&2
+            exit 1
+          fi
+
+      - name: Check registry for the version
+        id: registry
+        shell: bash
+        run: |
+          version="${RELEASE_TAG#v}"
+          if npm view "webvtt2ass@$version" version >/dev/null 2>&1; then
+            echo "webvtt2ass@$version is already published; the upload is skipped."
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm
+        if: steps.registry.outputs.published == 'false'
+        run: npm publish artifacts/npm/*.tgz --access public
